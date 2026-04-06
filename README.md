@@ -1,12 +1,5 @@
 <div align="center">
 
-<div align="center">
-
-< img src="https://capsule-render.vercel.app/api?type=waving&color=auto&height=120&section=header&text=Majsoul%20Coach&fontSize=50" width="100%"/>
-
-< img src="https://raw.githubusercontent.com/Tridiamond/D-Notes/master/images/pixel-cat.gif" width="100" />
-
-</div>
 
 # 🀄 AstrBot Plugin: Majsoul
 
