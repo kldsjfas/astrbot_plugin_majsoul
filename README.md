@@ -1,9 +1,5 @@
 <div align="center">
 
-<div align="center">
-  <img src="https://count.getloli.com/get/@killer_qert_majsoul?theme=moebooru" alt="猫娘计数器" />
-</div>
-
 # 🀄 AstrBot Plugin: Majsoul
 
 [![License](https://img.shields.io/badge/License-AGPL%203.0-green.svg)](https://opensource.org/licenses/AGPL-3.0)
@@ -11,6 +7,10 @@
 [![AstrBot](https://img.shields.io/badge/AstrBot-4.0+-red.svg)](https://github.com/Soulter/AstrBot)
 [![Author](https://img.shields.io/badge/作者-killer--qert-orange.svg)](https://github.com/kldsjfas)
 
+</div>
+
+<div align="center">
+  <img src="https://count.getloli.com/get/@killer_qert_majsoul?theme=moebooru" width="900" alt="猫娘计数器" />
 </div>
 
 ## ✨ 插件简介
