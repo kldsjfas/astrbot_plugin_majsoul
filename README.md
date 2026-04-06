@@ -1,5 +1,11 @@
 <div align="center">
 
+<div align="center">
+
+![Moe Counter](https://count.getloli.com/get/@kldsjfas_majsoul?theme=moebooru)
+
+</div>
+
 # 🀄 AstrBot Plugin: Majsoul
 
 🌸 **专属日麻赛博算命与毒舌战绩教练（AI版）** 🌸
