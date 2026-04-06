@@ -1,0 +1,26 @@
+{
+  "use_system_persona": {
+    "type": "bool",
+    "title": "覆盖开关：使用系统全局人格",
+    "description": "开启后，将忽略下方选择，强制使用AstrBot系统当前选中的全局人格。",
+    "default": false
+  },
+  "plugin_persona": {
+    "type": "string",
+    "title": "下拉选择：内置点评人格",
+    "description": "当上方开关关闭时，插件将使用你在这里选择的专属人格。",
+    "enum": [
+      "傲娇毒舌的日麻美少女教练",
+      "暴躁严厉的雀魂老哥",
+      "冷静无情的赛博分析师",
+      "极度中二的麻将魔法使"
+    ],
+    "default": "傲娇毒舌的日麻美少女教练"
+  },
+  "roast_level": {
+    "type": "int",
+    "title": "毒舌火力值 (1-3)",
+    "description": "1为轻微吐槽，3为火力全开的疯狂输出",
+    "default": 3
+  }
+}
