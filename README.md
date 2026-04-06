@@ -3,7 +3,7 @@
 
 # 🀄 AstrBot Plugin: Majsoul
 
-🌸 **专属日麻赛博算命与毒舌战绩教练（AI版）** 🌸
+
 
 [![AstrBot](https://img.shields.io/badge/AstrBot-Plugin-blue)](https://github.com/Soulter/AstrBot)
 [![License](https://img.shields.io/badge/License-AGPL%203.0-green.svg)](https://opensource.org/licenses/AGPL-3.0)
@@ -40,6 +40,10 @@
 ## 📦 安装方法
 
 直接在 AstrBot 的 WebUI 插件市场中搜索 `astrbot_plugin_majsoul` 进行一键安装。
+
+## 开发者碎碎念
+ 
+本人是编程萌新兼大学生，本插件属于兴趣使然的练手之作。代码可能写得不够完美和优雅，如果遇到什么Bug我并不一定会修
 
 ## 📜 许可证
 
