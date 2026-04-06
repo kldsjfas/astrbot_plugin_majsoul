@@ -7,7 +7,6 @@
 [![AstrBot](https://img.shields.io/badge/AstrBot-Plugin-blue)](https://github.com/Soulter/AstrBot)
 [![License](https://img.shields.io/badge/License-AGPL%203.0-green.svg)](https://opensource.org/licenses/AGPL-3.0)
 
-< img src="majsoul.jpg" width="200" style="border-radius: 50%" alt="majsoul_logo"/>
 
 </div>
 
