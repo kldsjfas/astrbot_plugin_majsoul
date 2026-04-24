@@ -1,17 +1,19 @@
 import aiohttp
 import re
+import time
 from astrbot.api.event import filter, AstrMessageEvent
 from astrbot.api.star import Context, Star, register
 from astrbot.api import logger
 
 # 🌟 统一作者名、简介、版本号和正确的 Github 仓库地址 🌟
-@register("astrbot_plugin_majsoul", "killer-qert", "🀄一款轻量化雀魂查谱吐槽插件🀄", "1.0.0",
-          "https://github.com/killer-qert/astrbot_plugin_majsoul")
+@register("astrbot_plugin_majsoul", "killer-qert", "🀄一款轻量化雀魂查谱吐槽插件🀄", "1.1.0",
+          "https://github.com/kldsjfas/astrbot_plugin_majsoul")
 class MajsoulPlugin(Star):
 
     def __init__(self, context: Context, config: dict):
         super().__init__(context)
         self.config = config
+        self._cache = {}  # 简单内存缓存 {nickname: (data, expire_time)}
 
     @filter.llm_tool(name="query_majsoul_stat")
     async def query_majsoul_tool(self, event: AstrMessageEvent, nickname: str):
@@ -54,8 +56,36 @@ class MajsoulPlugin(Star):
         data = await self._fetch_data(nickname)
         yield event.plain_result(f"【纯数据】\n{data}")
 
+    @filter.command("查谱")
+    async def analyze_paipu_cmd(self, event: AstrMessageEvent, paipu_input: str):
+        """纯数据模式查牌谱，无需AI介入"""
+        paipu_id = self._extract_paipu_id(paipu_input)
+        if not paipu_id:
+            yield event.plain_result("❌ 牌谱ID格式不对，请发送完整的牌谱链接或直接贴ID喵～")
+            return
+        # 目前底层API加密，返回引导信息
+        yield event.plain_result(f"📋 牌谱ID：{paipu_id}\n🔒 由于底层数据加密，目前暂不支持纯数据解析。\n💡 试试直接发牌谱链接给AI，让AI帮你'赛博算命'吐槽喵～")
+
     # ================= 网络请求 =================
+    def _extract_paipu_id(self, text: str) -> str:
+        """从文本中提取牌谱ID"""
+        # 匹配完整的雀魂牌谱链接
+        match = re.search(r'paipu[=/]([\w-]+)', text)
+        if match:
+            return match.group(1)
+        # 直接就是ID的情况（纯字母数字+横杠）
+        if re.match(r'^[\w-]{10,50}$', text.strip()):
+            return text.strip()
+        return ""
+
     async def _fetch_data(self, nickname: str) -> str:
+        # 检查缓存（10分钟有效期）
+        now = time.time()
+        cached = self._cache.get(nickname)
+        if cached and cached[1] > now:
+            logger.info(f"缓存命中: {nickname}")
+            return cached[0]
+
         search_url = f"https://5-data.amae-koromo.com/api/v2/pl4/search_player/{nickname}"
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
@@ -81,7 +111,10 @@ class MajsoulPlugin(Star):
                     first_rate = ranks[0] * 100 if len(ranks) > 0 else 0
                     deal_in_rate = stats.get('deal_in_rate', 0) * 100
                     avg_rank = stats.get('avg_rank', 0)
-                    return f"玩家：{actual_name}，对局：{count}场，一位率：{first_rate:.2f}%，放铳率：{deal_in_rate:.2f}%，平均顺位：{avg_rank:.2f}"
+                    result = f"玩家：{actual_name}，对局：{count}场，一位率：{first_rate:.2f}%，放铳率：{deal_in_rate:.2f}%，平均顺位：{avg_rank:.2f}"
+                    # 写入缓存（600秒 = 10分钟）
+                    self._cache[nickname] = (result, now + 600)
+                    return result
             except Exception as e:
                 logger.error(f"报错: {e}")
                 return "代码发生意外故障"
