@@ -1,0 +1,1 @@
+"""AstrBot Mahjong Soul plugin."""
