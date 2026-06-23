@@ -1,15 +1,13 @@
 {
   "use_system_persona": {
     "type": "bool",
-    "title": "覆盖开关：使用系统全局人格",
-    "description": "开启后，将忽略下方选择，强制使用AstrBot系统当前选中的全局人格。",
+    "description": "点评时使用 AstrBot 当前系统人格",
     "default": false
   },
   "plugin_persona": {
     "type": "string",
-    "title": "下拉选择：内置点评人格",
-    "description": "当上方开关关闭时，插件将使用你在这里选择的专属人格。",
-    "enum": [
+    "description": "插件内置点评风格",
+    "options": [
       "傲娇毒舌的日麻美少女教练",
       "暴躁严厉的雀魂老哥",
       "冷静无情的赛博分析师",
@@ -19,8 +17,25 @@
   },
   "roast_level": {
     "type": "int",
-    "title": "毒舌火力值 (1-3)",
-    "description": "1为轻微吐槽，3为火力全开的疯狂输出",
+    "description": "吐槽强度，范围 1-3",
     "default": 3
+  },
+  "request_timeout": {
+    "type": "int",
+    "description": "外部战绩接口超时时间，单位为秒",
+    "hint": "有效范围 5-30 秒，通常保持默认即可。",
+    "default": 15
+  },
+  "cache_ttl": {
+    "type": "int",
+    "description": "战绩缓存时间，单位为秒",
+    "hint": "有效范围 60-3600 秒。",
+    "default": 600
+  },
+  "max_cache_entries": {
+    "type": "int",
+    "description": "最多缓存多少名玩家的战绩",
+    "hint": "有效范围 32-1024。",
+    "default": 256
   }
 }

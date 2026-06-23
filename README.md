@@ -1,55 +1,48 @@
-<div align="center">
+# 雀魂 Majsoul 助手
 
-<div align="center">
-  <img src="https://count.getloli.com/get/@killer_qert_majsoul?theme=moebooru" width="900" alt="猫娘计数器" />
-</div>
+一个用于 AstrBot 的雀魂战绩查询插件。它通过公开接口查询玩家数据，也可以把战绩交给模型做简短点评。
 
-# 🀄 AstrBot Plugin: Majsoul
+## 环境要求
 
-[![License](https://img.shields.io/badge/License-AGPL%203.0-green.svg)](https://opensource.org/licenses/AGPL-3.0)
-[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
-[![AstrBot](https://img.shields.io/badge/AstrBot-4.0+-red.svg)](https://github.com/Soulter/AstrBot)
-[![Author](https://img.shields.io/badge/作者-killer--qert-orange.svg)](https://github.com/kldsjfas)
+- AstrBot 4.25 或更高版本
+- Python 3.12 或更高版本
 
-</div>
+## 使用方法
 
+| 指令 | 作用 |
+| --- | --- |
+| `/查雀魂 <完整昵称>` | 查询公开战绩 |
+| `/查谱 <链接或ID>` | 提取牌谱 ID |
+| `/雀魂帮助` | 查看指令说明 |
 
-## ✨ 插件简介
+也可以在正常对话中让模型查询某个玩家的雀魂战绩。查询成功后会提供四麻的一至四位率、放铳率和平均顺位。
 
-这是一款为 [AstrBot](https://github.com/Soulter/AstrBot) 机器人开发的轻量化雀魂查谱吐槽插件。
+## 配置
 
-它可以精准抓取玩家的战绩数据（一位率、放铳率等），或解析雀魂牌谱链接。AI 将根据这些冰冷的数据，化身傲娇教练对你一顿“猫嘴锐评”，或者化身赛博算命大师吐槽你的稀烂防守！
+插件管理页面可以调整点评人格、吐槽强度、请求超时和缓存时间。一般保持默认值即可。
 
-## 🚀 指令与触发方式
+## 说明
 
-当本插件启用后，用户可以直接对机器人提及以下指令：
+- 战绩来自 `amae-koromo.com` 的公开接口，接口异常时插件会重试并返回明确提示。
+- 查询接口可能只收录部分段位或模式，完整昵称也可能查不到。
+- 牌谱内容经过加密，本插件目前只识别牌谱 ID，不提供真实牌局解析。
+- 插件不会读取雀魂账号、密码或登录凭据。
 
-| 触发方式 | 说明 | 参数解释 |
-| :--- | :--- | :--- |
-| **聊天提及** `"查雀魂 [昵称]"` | 触发 AI 工具，查询目标玩家战绩并进行毒舌点评。 | `[昵称]`: 目标玩家的游戏名字 |
-| **发送牌谱链接** | 包含 `game.maj-soul.com/1/?paipu=` 的链接 | 触发 AI 工具，AI 将化身算命大师吐槽这局牌。 |
-| **纯文本指令** `/查谱 [ID/链接]` | (规划中) 手动触发牌谱分析，无 AI 介入的纯数据模式。 | `[ID/链接]`: 牌谱ID或完整链接 |
+## 安装
 
-## ⚙️ 配置面板
+在 AstrBot 插件市场搜索“雀魂 Majsoul 助手”，或在插件管理页面填写本仓库地址安装：
 
-本插件支持在 AstrBot 的 WebUI 管理后台进行可视化配置：
+`https://github.com/kldsjfas/astrbot_plugin_majsoul`
 
-| 配置项 | 类型 | 默认值 | 说明 |
-| :--- | :---: | :---: | :--- |
-| **内置教练人格** | `下拉栏` | 傲娇毒舌 | 提供多种内置的日麻专属吐槽人格供随时切换。 |
-| **赛博火力值** | `数字` | 3 | 设定吐槽的猛烈程度 (1-3级)，3级为火力全开！ |
-| **覆盖开关：系统人格** | `开关` | 关 | 开启后将忽略下拉选择，强制使用 AstrBot 当前選中的全局人格进行点评。 |
+## 开发检查
 
-## 📦 安装方法
+```bash
+pip install -r requirements.txt -r requirements-dev.txt
+ruff format --check .
+ruff check .
+pytest -q
+```
 
-直接在 AstrBot 的 WebUI 插件市场中搜索 `astrbot_plugin_majsoul` 进行一键安装。
+更新内容见 [CHANGELOG.md](CHANGELOG.md)。
 
-## 开发者碎碎念
- 
-本人是编程萌新兼大学生，本插件属于兴趣使然的练手之作。代码可能写得不够完美和优雅，如果遇到什么Bug我并不一定会修
-
-## 📜 许可证
-
-本项目基于 AGPL-3.0 协议开源。
-
-</div>
+本项目使用 AGPL-3.0 许可证。
