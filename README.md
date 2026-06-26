@@ -46,7 +46,7 @@
 
 ## 📦 安装方法
 
-直接在 AstrBot 的 WebUI 插件市场里搜索 `astrbot_plugin_majsoul` 安装即可。
+直接在 AstrBot 的 WebUI 插件市场里搜索 `astrbot_plugin_majsoul_stats` 安装即可。（之前叫 `astrbot_plugin_majsoul`，跟另一个同名插件撞了，从 2.0.1 起改了名，认准带 `_stats` 的这个就行。）
 
 也可以在插件管理页填写仓库地址安装：
 

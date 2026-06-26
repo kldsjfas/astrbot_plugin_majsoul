@@ -150,7 +150,7 @@ class MajsoulApiClient:
             self._session = aiohttp.ClientSession(
                 timeout=timeout,
                 headers={
-                    "User-Agent": "AstrBot-Majsoul-Plugin/2.0.0",
+                    "User-Agent": "AstrBot-Majsoul-Plugin/2.0.1",
                     "Referer": "https://amae-koromo.com/",
                 },
             )
