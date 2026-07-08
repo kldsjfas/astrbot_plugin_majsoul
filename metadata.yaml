@@ -1,8 +1,8 @@
 name: astrbot_plugin_majsoul_stats
 display_name: 雀魂 Majsoul 助手
-desc: 查询雀魂公开战绩，支持模型点评和牌谱 ID 识别
+desc: 查询雀魂四麻/三麻公开战绩，支持模型点评和牌谱 ID 识别
 help: 使用 /雀魂帮助 查看指令
-version: 2.0.1
+version: 2.1.0
 author: killer-qert
 repo: https://github.com/kldsjfas/astrbot_plugin_majsoul
 astrbot_version: ">=4.25,<5"

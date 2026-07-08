@@ -30,13 +30,16 @@ class MajsoulPlugin(Star):
         )
 
     @filter.llm_tool(name="query_majsoul_stat")
-    async def query_majsoul_tool(self, event: AstrMessageEvent, nickname: str) -> str:
+    async def query_majsoul_tool(
+        self, event: AstrMessageEvent, nickname: str, three_player: bool = False
+    ) -> str:
         """查询雀魂玩家的公开战绩，供对话中的战绩点评使用。
 
         Args:
             nickname(string): 玩家的完整雀魂昵称
+            three_player(boolean): 是否查询三麻战绩，默认查询四麻
         """
-        stats, error = await self._query_player(nickname)
+        stats, error = await self._query_player(nickname, three_player=three_player)
         if error:
             return error
 
@@ -74,8 +77,14 @@ class MajsoulPlugin(Star):
 
     @filter.command("查雀魂")
     async def query_majsoul_cmd(self, event: AstrMessageEvent, nickname: str):
-        """查询指定玩家的公开战绩数据。"""
+        """查询指定玩家的公开四麻战绩数据。"""
         stats, error = await self._query_player(nickname)
+        yield event.plain_result(error or stats.to_text())
+
+    @filter.command("查三麻")
+    async def query_sanma_cmd(self, event: AstrMessageEvent, nickname: str):
+        """查询指定玩家的公开三麻战绩数据。"""
+        stats, error = await self._query_player(nickname, three_player=True)
         yield event.plain_result(error or stats.to_text())
 
     @filter.command("查谱")
@@ -96,17 +105,22 @@ class MajsoulPlugin(Star):
     async def majsoul_help(self, event: AstrMessageEvent):
         """显示插件指令说明。"""
         yield event.plain_result(
-            "雀魂助手 2.0\n"
-            "/查雀魂 <完整昵称>  查询公开战绩\n"
+            "雀魂助手 2.1\n"
+            "/查雀魂 <完整昵称>  查询公开四麻战绩\n"
+            "/查三麻 <完整昵称>  查询公开三麻战绩\n"
             "/查谱 <链接或ID>    提取牌谱 ID\n"
-            "也可以在对话中让模型查询雀魂战绩。"
+            "战绩含段位、一至四位率、放铳率、和牌率、立直率等数据。\n"
+            "也可以在对话中直接让模型查询雀魂战绩。"
         )
 
     async def _query_player(
-        self, nickname: str
+        self, nickname: str, *, three_player: bool = False
     ) -> tuple[PlayerStats | None, str | None]:
         try:
-            return await self.client.query_player(nickname), None
+            return (
+                await self.client.query_player(nickname, three_player=three_player),
+                None,
+            )
         except InvalidNickname as exc:
             return None, str(exc)
         except PlayerNotFound:
