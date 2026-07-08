@@ -37,8 +37,11 @@ class _CacheEntry:
 
 
 class MajsoulApiClient:
-    BASE_URL = "https://5-data.amae-koromo.com/api/v2/pl4"
-    MODE_QUERY = "16,15,12,11,9,8"
+    BASE_URL = "https://5-data.amae-koromo.com/api/v2"
+    MODE_QUERY = {
+        "pl4": "16,15,12,11,9,8",
+        "pl3": "26,25,24,23,22,21",
+    }
     START_TIME = 1262304000000
     END_TIME = 2147483647000
 
@@ -61,16 +64,19 @@ class MajsoulApiClient:
             await self._session.close()
         self._session = None
 
-    async def query_player(self, nickname: str) -> PlayerStats:
+    async def query_player(
+        self, nickname: str, *, three_player: bool = False
+    ) -> PlayerStats:
         nickname = self._normalize_nickname(nickname)
-        key = nickname.casefold()
+        game_type = "pl3" if three_player else "pl4"
+        key = f"{game_type}:{nickname.casefold()}"
         cached = self._get_cached(key)
         if cached:
             return cached
 
         task = self._inflight.get(key)
         if task is None:
-            task = asyncio.create_task(self._query_and_cache(key, nickname))
+            task = asyncio.create_task(self._query_and_cache(key, nickname, game_type))
             self._inflight[key] = task
         try:
             return await task
@@ -78,17 +84,21 @@ class MajsoulApiClient:
             if self._inflight.get(key) is task and task.done():
                 self._inflight.pop(key, None)
 
-    async def _query_and_cache(self, key: str, nickname: str) -> PlayerStats:
-        candidates = await self.search_players(nickname)
+    async def _query_and_cache(
+        self, key: str, nickname: str, game_type: str
+    ) -> PlayerStats:
+        candidates = await self.search_players(nickname, game_type)
         player = self._select_player(nickname, candidates)
-        stats = await self.fetch_stats(player)
+        stats = await self.fetch_stats(player, game_type)
         if stats.count <= 0:
             raise PlayerNotFound
         self._set_cached(key, stats)
         return stats
 
-    async def search_players(self, nickname: str) -> list[PlayerCandidate]:
-        url = f"{self.BASE_URL}/search_player/{quote(nickname, safe='')}"
+    async def search_players(
+        self, nickname: str, game_type: str = "pl4"
+    ) -> list[PlayerCandidate]:
+        url = f"{self.BASE_URL}/{game_type}/search_player/{quote(nickname, safe='')}"
         payload = await self._request_json(url)
         if not isinstance(payload, list):
             raise DataFormatError("Invalid search response")
@@ -103,13 +113,29 @@ class MajsoulApiClient:
             raise PlayerNotFound
         return candidates
 
-    async def fetch_stats(self, player: PlayerCandidate) -> PlayerStats:
-        url = (
-            f"{self.BASE_URL}/player_stats/{player.account_id}/"
-            f"{self.START_TIME}/{self.END_TIME}?mode={self.MODE_QUERY}"
+    async def fetch_stats(
+        self, player: PlayerCandidate, game_type: str = "pl4"
+    ) -> PlayerStats:
+        mode = self.MODE_QUERY[game_type]
+        window = f"{self.START_TIME}/{self.END_TIME}"
+        base_url = (
+            f"{self.BASE_URL}/{game_type}/player_stats/"
+            f"{player.account_id}/{window}?mode={mode}"
         )
-        payload = await self._request_json(url)
-        return PlayerStats.from_payload(player.nickname, payload)
+        ext_url = (
+            f"{self.BASE_URL}/{game_type}/player_extended_stats/"
+            f"{player.account_id}/{window}?mode={mode}"
+        )
+        base_payload, ext_payload = await asyncio.gather(
+            self._request_json(base_url),
+            self._request_json(ext_url),
+        )
+        return PlayerStats.from_payloads(
+            player.nickname,
+            base_payload,
+            ext_payload,
+            three_player=game_type == "pl3",
+        )
 
     async def _request_json(self, url: str) -> Any:
         session = await self._get_session()
@@ -150,7 +176,7 @@ class MajsoulApiClient:
             self._session = aiohttp.ClientSession(
                 timeout=timeout,
                 headers={
-                    "User-Agent": "AstrBot-Majsoul-Plugin/2.0.1",
+                    "User-Agent": "AstrBot-Majsoul-Plugin/2.1.0",
                     "Referer": "https://amae-koromo.com/",
                 },
             )
